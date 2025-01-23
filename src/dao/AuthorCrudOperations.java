@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorCrudOperations implements CrudOperations<Author> {
-    private final DatabaseConf databaseConf = new DatabaseConf();
+    private DatabaseConf databaseConf = new DatabaseConf();
 
     @Override
     public List<Author> getAll() {
@@ -35,11 +35,11 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
 
     @Override
     public Author findById(int id) {
-        throw new RuntimeException("Not implemented yet");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public List<Author> saveAll(List<Author> entities) {
-        throw new RuntimeException("Not implemented yet");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
