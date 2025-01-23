@@ -1,5 +1,5 @@
 import dao.AuthorCrudOperations;
-import db.DatabaseConf;
+import db.DataSource;
 import entity.Author;
 
 import java.sql.Connection;
@@ -12,8 +12,8 @@ public class LibraryApplication {
 
     public static void main(String[] args) throws SQLException {
         // Check database connection works properly !
-        DatabaseConf databaseConf = new DatabaseConf();
-        Connection connection = databaseConf.getConnection();
+        DataSource dataSource = new DataSource();
+        Connection connection = dataSource.getConnection();
         logger.info(connection.toString());
         connection.close();
 

@@ -1,6 +1,6 @@
 package dao;
 
-import db.DatabaseConf;
+import db.DataSource;
 import entity.Author;
 
 import java.sql.Connection;
@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorCrudOperations implements CrudOperations<Author> {
-    private DatabaseConf databaseConf = new DatabaseConf();
+    private final DataSource dataSource = new DataSource();
 
     @Override
     public List<Author> getAll() {
-        try (Connection connection = databaseConf.getConnection();
+        try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery("select a.id, a.name, a.birth_date from author a")) {
                 List<Author> authors = new ArrayList<>();
