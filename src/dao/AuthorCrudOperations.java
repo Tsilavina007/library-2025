@@ -58,6 +58,23 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
 
     @Override
     public List<Author> saveAll(List<Author> entities) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Author> newAuthors = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            entities.forEach(entityToSave -> {
+                try (PreparedStatement statement = connection.prepareStatement("insert into author (id, name, birth_date) values (?, ?, ?)")) {
+                    statement.setString(1, entityToSave.getId());
+                    statement.setString(2, entityToSave.getName());
+                    statement.setDate(3, Date.valueOf(entityToSave.getBirthDate()));
+
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                newAuthors.add(findById(entityToSave.getId()));
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return newAuthors;
     }
 }

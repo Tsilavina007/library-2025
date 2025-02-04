@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,7 +38,14 @@ class AuthorCrudOperationsTest {
 
     @Test
     void create_then_update_author_ok() {
-        throw new UnsupportedOperationException("TODO: not supported yet.");
+        var authors = newAuthor(randomUUID().toString(), "Random famous author", LocalDate.of(2000, 1, 1));
+
+        var actual = subject.saveAll(List.of(authors));
+        //TODO: update created authors with saveAll when saveAll handle update
+
+        var existingAuthors = subject.getAll(1,3);
+        assertEquals(List.of(authors), actual);
+        assertTrue(existingAuthors.containsAll(actual));
     }
 
     private Author authorJJR() {
@@ -46,6 +54,14 @@ class AuthorCrudOperationsTest {
         expectedAuthor.setName("JJR");
         expectedAuthor.setBirthDate(LocalDate.of(2000, 1, 1));
         return expectedAuthor;
+    }
+
+    private Author newAuthor(String id, String name, LocalDate birthDate) {
+        Author author = new Author();
+        author.setId(id);
+        author.setName(name);
+        author.setBirthDate(birthDate);
+        return author;
     }
 }
 
