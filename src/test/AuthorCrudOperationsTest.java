@@ -8,8 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AuthorCrudOperationsTest {
     // Always rename the class to test to 'subject'
@@ -43,10 +42,29 @@ class AuthorCrudOperationsTest {
         var actual = subject.saveAll(List.of(authors));
         //TODO: update created authors with saveAll when saveAll handle update
 
-        var existingAuthors = subject.getAll(1,3);
+        var existingAuthors = subject.getAll(1, 3);
         assertEquals(List.of(authors), actual);
         assertTrue(existingAuthors.containsAll(actual));
     }
+
+    // TODO : make the changes inside the CrudOperations and its implementation to handle this
+    // Once test passed, set UnitTest corresponding
+    @Test
+    void read_authors_filter_by_name_or_birthday_between_intervals() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            throw new UnsupportedOperationException("Not implemented yet");
+        });
+    }
+
+    // TODO : make the changes inside the CrudOperations and its implementation to handle this
+    // Once test passed, set UnitTest corresponding
+    @Test
+    void read_authors_order_by_name_or_birthday_or_both() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            throw new UnsupportedOperationException("Not implemented yet");
+        });
+    }
+
 
     private Author authorJJR() {
         Author expectedAuthor = new Author();
