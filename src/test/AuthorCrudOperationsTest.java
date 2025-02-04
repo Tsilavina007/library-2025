@@ -1,10 +1,12 @@
 package test;
 
 import dao.AuthorCrudOperations;
+import dao.Criteria;
 import entity.Author;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
@@ -51,9 +53,24 @@ class AuthorCrudOperationsTest {
     // Once test passed, set UnitTest corresponding
     @Test
     void read_authors_filter_by_name_or_birthday_between_intervals() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            throw new UnsupportedOperationException("Not implemented yet");
-        });
+        ArrayList<Criteria> criteria = new ArrayList<>();
+        criteria.add(new Criteria("name", "rado"));
+        criteria.add(new Criteria("birth_date", LocalDate.of(2000, 1, 1)));
+        List<Author> expected = List.of(
+                authorJJR(),
+                authorRado());
+
+        List<Author> actual = subject.findByCriteria(criteria);
+
+        assertEquals(expected, actual);
+        assertTrue(actual.stream()
+                .allMatch(author -> author.getName().toLowerCase().contains("rado")
+                || author.getBirthDate().equals(LocalDate.of(2000, 1, 1))));
+
+    }
+
+    private Author authorRado() {
+        return newAuthor("author2_id", "Rado", LocalDate.of(1990, 1, 1));
     }
 
     // TODO : make the changes inside the CrudOperations and its implementation to handle this
