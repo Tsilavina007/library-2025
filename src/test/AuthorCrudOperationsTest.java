@@ -17,10 +17,7 @@ class AuthorCrudOperationsTest {
     @Test
     void read_all_authors_ok() {
         // Test for data and potential mock
-        Author expectedAuthor = new Author();
-        expectedAuthor.setId("author1_id");
-        expectedAuthor.setName("JJR");
-        expectedAuthor.setBirthDate(LocalDate.of(2000, 1, 1));
+        Author expectedAuthor = authorJJR();
 
         // Subject and the function to test
         List<Author> actual = subject.getAll(1, 3);
@@ -31,12 +28,24 @@ class AuthorCrudOperationsTest {
 
     @Test
     void read_author_by_id_ok() {
-        throw new UnsupportedOperationException("TODO: not supported yet.");
+        Author expectedAuthor = authorJJR();
+
+        Author actual = subject.findById(expectedAuthor.getId());
+
+        assertEquals(expectedAuthor, actual);
     }
 
     @Test
     void create_then_update_author_ok() {
         throw new UnsupportedOperationException("TODO: not supported yet.");
+    }
+
+    private Author authorJJR() {
+        Author expectedAuthor = new Author();
+        expectedAuthor.setId("author1_id");
+        expectedAuthor.setName("JJR");
+        expectedAuthor.setBirthDate(LocalDate.of(2000, 1, 1));
+        return expectedAuthor;
     }
 }
 
