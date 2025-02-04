@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AuthorCrudOperationsTest {
@@ -22,7 +23,7 @@ class AuthorCrudOperationsTest {
         expectedAuthor.setBirthDate(LocalDate.of(2000, 1, 1));
 
         // Subject and the function to test
-        List<Author> actual = subject.getAll();
+        List<Author> actual = subject.getAll(1, 3);
 
         // Assertions : verification to be made automatically
         assertTrue(actual.contains(expectedAuthor));

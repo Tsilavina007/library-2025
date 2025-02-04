@@ -3,10 +3,7 @@ package dao;
 import db.DataSource;
 import entity.Author;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +11,16 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
     private final DataSource dataSource = new DataSource();
 
     @Override
-    public List<Author> getAll() {
+    public List<Author> getAll(int page, int size) {
+        if (page < 1) {
+            throw new IllegalArgumentException("page must be greater than 0 but actual is " + page);
+        }
+        String sql = "select a.id, a.name, a.birth_date from author a order by a.id limit ? offset ?";
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery("select a.id, a.name, a.birth_date from author a")) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, size);
+            preparedStatement.setInt(2, size * (page - 1));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Author> authors = new ArrayList<>();
                 while (resultSet.next()) {
                     Author author = new Author();
