@@ -6,18 +6,27 @@ import java.util.Objects;
 public class Author {
     private String id;
     private String name;
+	private Sex sex;
     private LocalDate birthDate;
 
     public Author() {
     }
 
-    public LocalDate getBirthDate() {
+	public LocalDate getBirthDate() {
         return birthDate;
     }
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
+
+	public Sex getSex() {
+		return sex;
+	}
+
+	public void setSex(Sex sex) {
+		this.sex = sex;
+	}
 
     public String getName() {
         return name;
@@ -40,6 +49,7 @@ public class Author {
         return "Author{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+				", sex='" + sex + '\'' +
                 ", birthDate=" + birthDate +
                 '}';
     }
@@ -49,7 +59,7 @@ public class Author {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author author = (Author) o;
-        return Objects.equals(id, author.id) && Objects.equals(name, author.name) && Objects.equals(birthDate, author.birthDate);
+        return Objects.equals(id, author.id) && Objects.equals(name, author.name) && Objects.equals(sex, author.sex) && Objects.equals(birthDate, author.birthDate);
     }
 
     @Override
