@@ -4,8 +4,10 @@ import db.DataSource;
 import entity.Author;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import dao.mapper.SexMapper;
 
@@ -43,6 +45,7 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
                     author.setName(resultSet.getString("name"));
 					author.setSex(sexMapper.mapFromResultSet(resultSet.getString("sex")));
                     author.setBirthDate(resultSet.getDate("birth_date").toLocalDate());
+
                     authors.add(author);
                 }
                 return authors;
@@ -78,16 +81,18 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
         List<Author> newAuthors = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             entities.forEach(entityToSave -> {
-                try (PreparedStatement statement = connection.prepareStatement("insert into author (id, name, sex, birth_date) values (?, ?, ?, ?)")) {
-                    statement.setString(1, entityToSave.getId());
-                    statement.setString(2, entityToSave.getName());
-					statement.setString(3, entityToSave.getSex().toString());
-                    statement.setDate(4, Date.valueOf(entityToSave.getBirthDate()));
-
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+				// String sql = "insert into author (id, name, sex, birth_date) values (?, ?, ?, ?)";
+				String sql = "insert into author (id, name, sex, birth_date) values (?, ?, ?, ?) " +
+						 "on conflict (id) do update set name = excluded.name, sex = excluded.sex, birth_date = excluded.birth_date";
+				try (PreparedStatement statement = connection.prepareStatement(sql)) {
+					statement.setString(1, entityToSave.getId());
+					statement.setString(2, entityToSave.getName());
+                    statement.setObject(3, sexMapper.mapToDatabaseColumn(entityToSave.getSex()), java.sql.Types.OTHER);
+					statement.setDate(4, Date.valueOf(entityToSave.getBirthDate()));
+					statement.executeUpdate();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
                 newAuthors.add(findById(entityToSave.getId()));
             });
         } catch (SQLException e) {
@@ -95,4 +100,7 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
         }
         return newAuthors;
     }
+
+
+
 }

@@ -12,6 +12,22 @@ public class Author {
     public Author() {
     }
 
+
+
+	public Author(String id, String name, LocalDate birthDate) {
+		this.id = id;
+		this.name = name;
+		this.birthDate = birthDate;
+	}
+
+
+	public Author(String id, String name, Sex sex, LocalDate birthDate) {
+		this.id = id;
+		this.name = name;
+		this.sex = sex;
+		this.birthDate = birthDate;
+	}
+
 	public LocalDate getBirthDate() {
         return birthDate;
     }

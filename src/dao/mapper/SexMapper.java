@@ -16,4 +16,14 @@ public class SexMapper {
             default -> throw new IllegalArgumentException("Unknown Sex value " + stringValue);
         };
     }
+
+    public String mapToDatabaseColumn(Sex sex) {
+        if (sex == null) {
+            return null;
+        }
+        return switch (sex) {
+            case MALE -> "MALE";
+            case FEMALE -> "FEMALE";
+        };
+    }
 }
