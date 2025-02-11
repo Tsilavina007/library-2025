@@ -7,6 +7,8 @@ public interface CrudOperations<E> {
 
     E findById(String id);
 
+	List<E> findByCriteria(List<Criteria> criterias);
+
     // Both create (if does not exist) or update (if exist) entities
     List<E> saveAll(List<E> entities);
 }
