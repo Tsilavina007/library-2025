@@ -3,6 +3,8 @@ import db.DataSource;
 import entity.Author;
 import entity.Sex;
 
+import static entity.Sex.MALE;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -22,13 +24,16 @@ public class LibraryApplication {
         // Check author getAll() works
         AuthorCrudOperations authorCrudOperations = new AuthorCrudOperations();
 
-		Author newAuthor = new Author("authoridsadj_8", "Tsong", Sex.FEMALE, LocalDate.of(2001, 1, 1));
+		// Author authorRado = new Author("author2_idRado", "Rado", Sex.MALE, LocalDate.of(1990, 1, 1));
+
+		Author authorJJR = new Author("author1_id", "JJR", MALE, LocalDate.of(2000, 1, 1));
 
 
-		// logger.info(authorCrudOperations.saveAll(List.of(newAuthor)).toString());
 
-        List<Author> authors = authorCrudOperations.getAll(1, 10);
+		logger.info(authorCrudOperations.saveAll(List.of(authorJJR)).toString());
 
-        logger.info(authors.toString());
+        // List<Author> authors = authorCrudOperations.getAll(1, 10);
+
+        // logger.info(authors.toString());
     }
 }

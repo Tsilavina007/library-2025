@@ -56,7 +56,11 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                return mapAuthorFromResultSet(resultSet);
+                if (resultSet.next()) {
+					return mapAuthorFromResultSet(resultSet);
+				} else {
+					throw new IllegalArgumentException("Author with id " + id + " not found");
+				}
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -91,7 +95,7 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
     @Override
     public List<Author> findByCriteria(List<Criteria> criteria) {
         List<Author> authors = new ArrayList<>();
-        String sql = "select a.id, a.name, a.birth_date from author a where 1=1";
+        String sql = "select a.id, a.name, a.sex, a.birth_date from author a where 1=1";
         for (Criteria c : criteria) {
             if ("name".equals(c.getColumn())) {
                 sql += " and a." + c.getColumn() + " ilike '%" + c.getValue().toString() + "%'";
