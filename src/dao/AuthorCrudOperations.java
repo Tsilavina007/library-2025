@@ -7,7 +7,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import dao.mapper.SexMapper;
 
@@ -93,7 +92,7 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
     }
 
     @Override
-    public List<Author> findByCriteria(List<Criteria> criteria) {
+    public List<Author> findByCriteria(List<Criteria> criteria, int page, int size) {
         List<Author> authors = new ArrayList<>();
         String sql = "select a.id, a.name, a.sex, a.birth_date from author a where 1=1";
         for (Criteria c : criteria) {
@@ -103,17 +102,50 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
                 sql += " or a." + c.getColumn() + " = '" + c.getValue().toString() + "'";
             }
         }
-        try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-            while (resultSet.next()) {
-                authors.add(mapAuthorFromResultSet(resultSet));
-            }
-            return authors;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+		sql += " limit ? offset ?";
+
+		try (Connection connection = dataSource.getConnection();
+			 PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+			preparedStatement.setInt(1, size);
+			preparedStatement.setInt(2, size * (page - 1));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					authors.add(mapAuthorFromResultSet(resultSet));
+				}
+				return authors;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
+
+	@Override
+	public List<Author> orderByCriteria(List<Criteria> criteria, int page, int size) {
+		List<Author> authors = new ArrayList<>();
+
+		String sql = "select a.id, a.name, a.sex, a.birth_date from author a order by ";
+        for (Criteria c : criteria) {
+            sql += "a." + c.getColumn() + " ASC" + ", ";
+        }
+
+		sql = sql.substring(0, sql.length() - 2);
+
+		sql += " limit ? offset ?";
+
+		try (Connection connection = dataSource.getConnection();
+			 PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+			preparedStatement.setInt(1, size);
+			preparedStatement.setInt(2, size * (page - 1));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					authors.add(mapAuthorFromResultSet(resultSet));
+				}
+				return authors;
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     private Author mapAuthorFromResultSet(ResultSet resultSet) throws SQLException {
             Author author = new Author();

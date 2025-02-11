@@ -40,7 +40,6 @@ class AuthorCrudOperationsTest {
 		assertEquals(expectedAuthor, actual);
 	}
 
-
 	@Test
 	void create_then_update_author_ok() {
 		// Create a new author
@@ -65,36 +64,72 @@ class AuthorCrudOperationsTest {
 	// TODO : make the changes inside the CrudOperations and its implementation to
 	// handle this
 	// Once test passed, set UnitTest corresponding
-    @Test
-    void read_authors_filter_by_name_or_birthday_between_intervals() {
-        ArrayList<Criteria> criteria = new ArrayList<>();
-        criteria.add(new Criteria("name", "rado"));
-        criteria.add(new Criteria("birth_date", LocalDate.of(2000, 1, 1)));
-        List<Author> expected = List.of(
-                authorRado(),
-				authorJJR());
+	@Test
+	void read_authors_filter_by_name_or_birthday_between_intervals() {
+		ArrayList<Criteria> criteria = new ArrayList<>();
+		criteria.add(new Criteria("name", "rado"));
+		criteria.add(new Criteria("birth_date", LocalDate.of(2000, 1, 1)));
+		List<Author> expected = List.of(
+			authorJJR(),
+			authorRado());
 
-        List<Author> actual = subject.findByCriteria(criteria);
+		List<Author> actual = subject.findByCriteria(criteria, 1, 10);
 
-        assertEquals(expected, actual);
-        assertTrue(actual.stream()
-                .allMatch(author -> author.getName().toLowerCase().contains("rado")
-                || author.getBirthDate().equals(LocalDate.of(2000, 1, 1))));
+		assertEquals(expected, actual);
+		assertTrue(actual.stream()
+				.allMatch(author -> author.getName().toLowerCase().contains("rado")
+						|| author.getBirthDate().equals(LocalDate.of(2000, 1, 1))));
 
-    }
+	}
 
-    private Author authorRado() {
-        return newAuthor("author2_idRado", "Rado", Sex.MALE, LocalDate.of(1990, 1, 1));
-    }
+	private Author authorRado() {
+		return newAuthor("author2_idRado", "Rado", Sex.MALE, LocalDate.of(1990, 1, 1));
+	}
 
 	// TODO : make the changes inside the CrudOperations and its implementation to
 	// handle this
 	// Once test passed, set UnitTest corresponding
 	@Test
 	void read_authors_order_by_name_or_birthday_or_both() {
-		assertThrows(UnsupportedOperationException.class, () -> {
-			throw new UnsupportedOperationException("Not implemented yet");
+		// Criteria for ordering by name
+		ArrayList<Criteria> criteriaByName = new ArrayList<>();
+		criteriaByName.add(new Criteria("name"));
+
+		// Criteria for ordering by birth_date
+		ArrayList<Criteria> criteriaByBirthDate = new ArrayList<>();
+		criteriaByBirthDate.add(new Criteria("birth_date"));
+
+		// Criteria for ordering by both name and birth_date
+		ArrayList<Criteria> criteriaByNameAndBirthDate = new ArrayList<>();
+		criteriaByNameAndBirthDate.add(new Criteria("name"));
+		criteriaByNameAndBirthDate.add(new Criteria("birth_date"));
+
+		List<Author> expectedByName = subject.getAll(1, 10);
+		expectedByName.sort((a1, a2) -> a1.getName().compareTo(a2.getName()));
+
+		List<Author> expectedByBirthDate = subject.getAll(1, 10);
+		expectedByBirthDate.sort((a1, a2) -> a1.getBirthDate().compareTo(a2.getBirthDate()));
+
+		List<Author> expectedByNameAndBirthDate = subject.getAll(1, 10);
+		expectedByNameAndBirthDate.sort((a1, a2) -> {
+			int nameComparison = a1.getName().compareTo(a2.getName());
+			if (nameComparison == 0) {
+				return a1.getBirthDate().compareTo(a2.getBirthDate());
+			}
+			return nameComparison;
 		});
+
+		// Test ordering by name
+		List<Author> actualByName = subject.orderByCriteria(criteriaByName, 1, 10);
+		assertEquals(expectedByName, actualByName);
+
+		// Test ordering by birth_date
+		List<Author> actualByBirthDate = subject.orderByCriteria(criteriaByBirthDate, 1, 10);
+		assertEquals(expectedByBirthDate, actualByBirthDate);
+
+		// Test ordering by both name and birth_date
+		List<Author> actualByNameAndBirthDate = subject.orderByCriteria(criteriaByNameAndBirthDate, 1, 10);
+		assertEquals(expectedByNameAndBirthDate, actualByNameAndBirthDate);
 	}
 
 	private Author authorJJR() {
@@ -115,4 +150,3 @@ class AuthorCrudOperationsTest {
 		return author;
 	}
 }
-

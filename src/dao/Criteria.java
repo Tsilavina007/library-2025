@@ -9,6 +9,10 @@ public class Criteria {
         this.value = value;
     }
 
+    public Criteria(String column) {
+        this.column = column;
+    }
+
 	public Object getValue() {
         return value;
     }
