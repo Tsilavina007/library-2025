@@ -25,10 +25,10 @@ public class LibraryApplication {
 		Author newAuthor = new Author("authoridsadj_8", "Tsong", Sex.FEMALE, LocalDate.of(2001, 1, 1));
 
 
-		logger.info(authorCrudOperations.saveAll(List.of(newAuthor)).toString());
+		// logger.info(authorCrudOperations.saveAll(List.of(newAuthor)).toString());
 
-        // List<Author> authors = authorCrudOperations.getAll(1, 10);
+        List<Author> authors = authorCrudOperations.getAll(1, 10);
 
-        // logger.info(authors.toString());
+        logger.info(authors.toString());
     }
 }

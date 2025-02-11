@@ -40,13 +40,7 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Author> authors = new ArrayList<>();
                 while (resultSet.next()) {
-                    Author author = new Author();
-                    author.setId(resultSet.getString("id"));
-                    author.setName(resultSet.getString("name"));
-					author.setSex(sexMapper.mapFromResultSet(resultSet.getString("sex")));
-                    author.setBirthDate(resultSet.getDate("birth_date").toLocalDate());
-
-                    authors.add(author);
+                    authors.add(mapAuthorFromResultSet(resultSet));
                 }
                 return authors;
             }
@@ -62,14 +56,7 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                Author author = new Author();
-                while (resultSet.next()) {
-                    author.setId(resultSet.getString("id"));
-                    author.setName(resultSet.getString("name"));
-					author.setSex(sexMapper.mapFromResultSet(resultSet.getString("sex")));
-                    author.setBirthDate(resultSet.getDate("birth_date").toLocalDate());
-                }
-                return author;
+                return mapAuthorFromResultSet(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -101,6 +88,13 @@ public class AuthorCrudOperations implements CrudOperations<Author> {
         return newAuthors;
     }
 
-
+    private Author mapAuthorFromResultSet(ResultSet resultSet) throws SQLException {
+            Author author = new Author();
+            author.setId(resultSet.getString("id"));
+            author.setName(resultSet.getString("name"));
+			author.setSex(sexMapper.mapFromResultSet(resultSet.getString("sex")));
+            author.setBirthDate(resultSet.getDate("birth_date").toLocalDate());
+        return author;
+    }
 
 }
